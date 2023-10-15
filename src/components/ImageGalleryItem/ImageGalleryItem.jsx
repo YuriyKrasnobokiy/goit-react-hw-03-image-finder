@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const ImageGalleryItem = ({ image }) => {
-  const { largeImageURL, webformatURL, id, tags } = image;
+  const { webformatURL, id, tags } = image;
   return (
     <>
       <li key={id}>
