@@ -1,3 +1,17 @@
-import { BulletList } from 'react-content-loader';
+import { Circles } from 'react-loader-spinner';
 
-export const MyLoader = () => <BulletList />;
+export const MyLoader = () => {
+  return (
+    <div>
+      <Circles
+        height="80"
+        width="80"
+        color="#4fa94d"
+        ariaLabel="circles-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        visible={true}
+      />
+    </div>
+  );
+};

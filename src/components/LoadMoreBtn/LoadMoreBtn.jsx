@@ -1,5 +1,8 @@
 import React from 'react';
+import { LoadMoreBtnStyled } from './LoadMoreBtn.Styled';
 
-export const LoadMoreBtn = () => {
-  return <button>Load More</button>;
+export const LoadMoreBtn = ({ handlerClick }) => {
+  return (
+    <LoadMoreBtnStyled onClick={handlerClick}>Load More</LoadMoreBtnStyled>
+  );
 };
