@@ -2,17 +2,15 @@ import React, { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { LoadMoreBtn } from './LoadMoreBtn/LoadMoreBtn';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-
+import toast, { Toaster } from 'react-hot-toast';
 import { searchImg } from './api/api';
 import { MyLoader } from './Loader/Loader';
-import { Modal } from './Modal/Modal';
-// import { fetchImages } from '../api/api';
 
 export class App extends Component {
   state = {
     images: [],
     isLoading: false,
-    isError: null,
+    isError: false,
     searchQuery: '',
     page: 1,
     loadMore: false,
@@ -20,18 +18,6 @@ export class App extends Component {
     tags: null,
     showModal: false,
   };
-
-  // async componentDidMount() {
-  //   this.setState({ isLoading: true });
-  //   try {
-  //     // const images = fetchImages(this.searchQuery);
-  //     // this.setState({ images });
-  //   } catch (error) {
-  //     this.setState({ error });
-  //   } finally {
-  //     this.setState({ isLoading: false });
-  //   }
-  // }
 
   async componentDidUpdate(_, prevState) {
     if (
@@ -47,7 +33,7 @@ export class App extends Component {
           loadMore: page < Math.ceil(totalImg.totalHits / 12),
         }));
       } catch (error) {
-        console.log(error);
+        this.setState({ isError: true });
       } finally {
         this.setState({ isLoading: false });
       }
@@ -62,45 +48,24 @@ export class App extends Component {
   handlerClick = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
-
-  handlerRecieveImg = (tags, largeImageURL) => {
-    // console.log(largeImageURL);
-    this.setState({
-      tags: tags,
-      largeImageURL: largeImageURL,
-      showModal: true,
-    });
-  };
-
-  handleModalToggle = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
-  };
-
   render() {
-    const { images, isLoading, error, loadMore, showModal } = this.state;
-    // console.log(this.state.showModal);
+    const { images, isLoading, isError, loadMore } = this.state;
+
     return (
       <>
         <Searchbar onSubmit={this.handleSearch} />
-        {error && <p>'Whoops, something went wrong'</p>}
+        {isError &&
+          toast.error('Whoops, something went wrong', {
+            duration: 3000,
+            position: 'top-right',
+          })}
+
         {isLoading && <MyLoader />}
-        {images.length > 0 && (
-          <ImageGallery
-            images={this.state.images}
-            // totalImg={this.totalImg}
-            onPicClick={this.handlerRecieveImg}
-          />
-        )}
-        {showModal && (
-          <Modal
-            largeImageURL={this.state.largeImageURL}
-            tags={this.state.tags}
-            onClose={this.handleModalToggle}
-          />
-        )}
+
+        {images.length > 0 && <ImageGallery images={this.state.images} />}
+
         {loadMore && <LoadMoreBtn handlerClick={this.handlerClick} />}
+        <Toaster />
       </>
     );
   }
